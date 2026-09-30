@@ -1,0 +1,4 @@
+apiVersion = "agentic-engineer/v1"
+name = "library-app"
+createdAt = "2026-09-30T14:13:12Z"
+idea = "Build a simple library app\n\n- Members sign in, browse and search the books (title, author, genre,\n  available or on loan), borrow an available book for two weeks, and return it.\n- Members can describe what they're in the mood for in their own words, like\n  \"something light and funny for a long flight\" or \"a short book about\n  space, like The Martian\", and get two or three suggestions from books on\n  our shelf that are available now, each with a one-line reason.\n- Members can ask about their own loans in plain language, like \"when is my\n  book due?\" or \"what have I borrowed this year?\", and get answers from\n  their real loans.\n- Librarians add, edit and remove books, and see which books are overdue."
