@@ -136,6 +136,13 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Book' }
+              example:
+                id: "bk-3"
+                title: "Project Hail Mary"
+                author: "Andy Weir"
+                genre: "Science Fiction"
+                description: "A lone astronaut must save humanity from extinction."
+                status: "available"
         '400':
           description: Invalid book details
           content:

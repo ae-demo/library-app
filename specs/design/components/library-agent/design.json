@@ -12,7 +12,7 @@
     { "kind": "platform-resource", "name": "user-auth", "resourceType": "thunder-app" },
     { "kind": "platform-resource", "name": "library-agent-memory-db", "resourceType": "postgres-cnpg" }
   ],
-  "description": "A single conversational agent for members: given a free-text mood description it suggests two or three available books with one-line reasons, and given a plain-language question about the caller's own loans it answers from that caller's real loan records fetched from library-api. Does not create, edit or remove books, and does not create or modify loans.",
-  "stories": [5, 6],
+  "description": "A single conversational agent: for a member, given a free-text mood description it suggests two or three available books with one-line reasons, or given a plain-language question about the caller's own loans it answers from that caller's real loan records; for a librarian, given an uploaded photo of a book it extracts the book's details and adds it to the catalog once the librarian confirms. Does not edit or remove books, and does not create or modify loans.",
+  "stories": [5, 6, 9],
   "skillsPinned": ["agent-building"]
 }

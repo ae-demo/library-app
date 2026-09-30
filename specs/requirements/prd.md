@@ -45,6 +45,8 @@ get answers based on my real loan history.
 stays accurate and up to date.
 8. As a Librarian, I want to see which books are overdue, so that I can
 follow up on them.
+9. As a Librarian, I want to add a book by uploading a photo of it, so that
+I don't have to type in its details by hand.
 
 ## Product Decisions
 
@@ -65,6 +67,10 @@ loan history.
 overdue books by following up directly.
 - A book currently on loan cannot be removed from the catalog until it is
 returned.
+- Adding a book from a photo is handled by an agent that reads the uploaded
+photo, extracts the book's title, author, genre and description, shows the
+librarian what it found, and adds the book only after the librarian
+confirms.
 
 ## Out of Scope
 

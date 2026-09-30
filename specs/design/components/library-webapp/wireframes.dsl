@@ -41,6 +41,7 @@ screen ManageCatalog "Librarian's catalog management"
   row
     heading "Manage Catalog"
     right
+    button "Add by Photo" -> AddBookByPhoto
     button "Add Book" primary -> AddEditBook
   table "Title | Author | Genre | Status" -> AddEditBook
     row "The Martian | Andy Weir | Science Fiction | Available"
@@ -59,6 +60,23 @@ screen AddEditBook "Add or edit a book"
     right
     button "Cancel" -> ManageCatalog
     button "Save" primary -> ManageCatalog
+
+screen AddBookByPhoto "Add a book by uploading a photo of it"
+  navbar "Library"
+  sidebar "Catalog -> ManageCatalog | Overdue -> Overdue"
+  heading "Add Book by Photo"
+  image "Upload a photo of the book"
+  button "Extract Details" primary // the assistant reads the photo and replies in place
+  divider
+  text "Extracted details"
+  input "Title"
+  input "Author"
+  input "Genre"
+  textarea "Description"
+  row
+    right
+    button "Cancel" -> ManageCatalog
+    button "Confirm and Add" primary -> ManageCatalog
 
 screen Overdue "Every overdue loan"
   navbar "Library"
@@ -84,4 +102,5 @@ flow "Manage the catalog"
   description "A librarian manages books and follows up on overdue loans"
   ManageCatalog
   AddEditBook
+  AddBookByPhoto
   Overdue
