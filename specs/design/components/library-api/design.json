@@ -1,0 +1,17 @@
+{
+  "name": "library-api",
+  "type": "service",
+  "version": "0.1.0",
+  "language": "Ballerina",
+  "buildpack": "docker",
+  "appPath": "library-api",
+  "entrypoint": "deployment/service",
+  "exposure": "internet",
+  "dependencies": [
+    { "kind": "platform-resource", "name": "library-db", "resourceType": "postgres-cnpg" },
+    { "kind": "platform-resource", "name": "user-auth", "resourceType": "thunder-app" }
+  ],
+  "description": "Owns the book catalog and member loans: lists and searches books, tracks each book's availability, creates and returns loans with a fixed two-week due date, and reports overdue loans to librarians. Does not send notifications, charge fines, or handle mood-based suggestions or plain-language Q&A — those are the agents' job, calling back into this API for data.",
+  "stories": [2, 3, 4, 7, 8],
+  "skillsPinned": ["openapi-conventions", "ballerina", "thunder-authentication", "api-management"]
+}

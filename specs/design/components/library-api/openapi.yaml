@@ -1,0 +1,357 @@
+openapi: 3.0.3
+info:
+  title: Library API
+  version: 0.1.0
+  description: Book catalog and member loans for the library app.
+servers:
+  - url: /
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: /oauth2/authorize
+          tokenUrl: /oauth2/token
+          scopes:
+            books:manage: Add, edit and remove any book
+            loans:read: The caller's own loans
+            loans:borrow: Borrow an available book as the caller
+            loans:return: Return one of the caller's own loans
+            loans:read-overdue: Every overdue loan
+  schemas:
+    Book:
+      type: object
+      required: [id, title, author, genre, status]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        author: { type: string }
+        genre: { type: string }
+        description: { type: string }
+        status: { type: string, enum: [available, on-loan] }
+    BookInput:
+      type: object
+      required: [title, author, genre]
+      properties:
+        title: { type: string }
+        author: { type: string }
+        genre: { type: string }
+        description: { type: string }
+    Loan:
+      type: object
+      required: [id, bookId, memberId, borrowedAt, dueAt]
+      properties:
+        id: { type: string }
+        bookId: { type: string }
+        book: { $ref: '#/components/schemas/Book' }
+        memberId: { type: string }
+        borrowedAt: { type: string, format: date }
+        dueAt: { type: string, format: date }
+        returnedAt: { type: string, format: date, nullable: true }
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code: { type: integer, description: HTTP or application error code }
+        message: { type: string, description: short human-readable label }
+        description: { type: string, description: detailed explanation }
+        moreInfo: { type: string, description: URI to documentation }
+security:
+  - oauth2: []
+paths:
+  /books:
+    get:
+      operationId: listBooks
+      summary: Search the catalog — every signed-in user
+      parameters:
+        - name: title
+          in: query
+          schema: { type: string }
+        - name: author
+          in: query
+          schema: { type: string }
+        - name: genre
+          in: query
+          schema: { type: string }
+        - name: status
+          in: query
+          schema: { type: string, enum: [available, on-loan] }
+        - name: limit
+          in: query
+          schema: { type: integer, default: 20, maximum: 100 }
+        - name: offset
+          in: query
+          schema: { type: integer, default: 0 }
+      responses:
+        '200':
+          description: Matching books
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [count, data]
+                properties:
+                  count: { type: integer, description: total matching items }
+                  next: { type: string, nullable: true, description: relative URI of the next page }
+                  previous: { type: string, nullable: true, description: relative URI of the previous page }
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Book' }
+              example:
+                count: 2
+                next: null
+                previous: null
+                data:
+                  - id: "bk-1"
+                    title: "The Martian"
+                    author: "Andy Weir"
+                    genre: "Science Fiction"
+                    description: "An astronaut stranded on Mars fights to survive."
+                    status: "available"
+                  - id: "bk-2"
+                    title: "Good Omens"
+                    author: "Terry Pratchett and Neil Gaiman"
+                    genre: "Comedy"
+                    description: "An angel and a demon team up to stop the apocalypse."
+                    status: "available"
+        '401':
+          description: Not signed in
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+    post:
+      operationId: addBook
+      summary: Add a book to the catalog
+      security:
+        - oauth2: [books:manage]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/BookInput' }
+      responses:
+        '201':
+          description: Book added
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Book' }
+        '400':
+          description: Invalid book details
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '401':
+          description: Not signed in
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '403':
+          description: Missing the books:manage permission
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+  /books/{bookId}:
+    get:
+      operationId: getBook
+      summary: Read one book — every signed-in user
+      parameters:
+        - name: bookId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: The book
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Book' }
+        '404':
+          description: No such book
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+    put:
+      operationId: editBook
+      summary: Edit a book's details
+      security:
+        - oauth2: [books:manage]
+      parameters:
+        - name: bookId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/BookInput' }
+      responses:
+        '200':
+          description: Book updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Book' }
+        '400':
+          description: Invalid book details
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '404':
+          description: No such book
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+    delete:
+      operationId: removeBook
+      summary: Remove a book from the catalog
+      security:
+        - oauth2: [books:manage]
+      parameters:
+        - name: bookId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '204':
+          description: Book removed
+        '400':
+          description: The book is currently on loan and cannot be removed
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '404':
+          description: No such book
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+  /me/loans:
+    get:
+      operationId: listMyLoans
+      summary: The caller's own loans
+      security:
+        - oauth2: [loans:read]
+      parameters:
+        - name: limit
+          in: query
+          schema: { type: integer, default: 20, maximum: 100 }
+        - name: offset
+          in: query
+          schema: { type: integer, default: 0 }
+      responses:
+        '200':
+          description: The caller's loans
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [count, data]
+                properties:
+                  count: { type: integer, description: total matching items }
+                  next: { type: string, nullable: true, description: relative URI of the next page }
+                  previous: { type: string, nullable: true, description: relative URI of the previous page }
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Loan' }
+              example:
+                count: 1
+                next: null
+                previous: null
+                data:
+                  - id: "ln-1"
+                    bookId: "bk-1"
+                    book:
+                      id: "bk-1"
+                      title: "The Martian"
+                      author: "Andy Weir"
+                      genre: "Science Fiction"
+                      status: "on-loan"
+                    memberId: "user-123"
+                    borrowedAt: "2026-09-16"
+                    dueAt: "2026-09-30"
+                    returnedAt: null
+    post:
+      operationId: borrowBook
+      summary: Borrow an available book as the caller
+      security:
+        - oauth2: [loans:borrow]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [bookId]
+              properties:
+                bookId: { type: string }
+      responses:
+        '201':
+          description: Loan created, due in two weeks
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Loan' }
+        '400':
+          description: The book is not available
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '404':
+          description: No such book
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+  /me/loans/{loanId}/return:
+    post:
+      operationId: returnLoan
+      summary: Return one of the caller's own loans
+      security:
+        - oauth2: [loans:return]
+      parameters:
+        - name: loanId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Loan returned, book made available again
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Loan' }
+        '400':
+          description: The loan was already returned
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '404':
+          description: No such loan for the caller
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+  /loans/overdue:
+    get:
+      operationId: listOverdueLoans
+      summary: Every overdue loan
+      security:
+        - oauth2: [loans:read-overdue]
+      parameters:
+        - name: limit
+          in: query
+          schema: { type: integer, default: 20, maximum: 100 }
+        - name: offset
+          in: query
+          schema: { type: integer, default: 0 }
+      responses:
+        '200':
+          description: Overdue loans
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [count, data]
+                properties:
+                  count: { type: integer, description: total matching items }
+                  next: { type: string, nullable: true, description: relative URI of the next page }
+                  previous: { type: string, nullable: true, description: relative URI of the previous page }
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Loan' }

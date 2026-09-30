@@ -1,0 +1,49 @@
+{
+  "version": 3,
+  "permissions": [
+    {
+      "resource": "books",
+      "component": "library-api",
+      "description": "The book catalog",
+      "actions": [
+        { "handle": "manage", "description": "Add, edit and remove any book" }
+      ]
+    },
+    {
+      "resource": "loans",
+      "component": "library-api",
+      "description": "Member loans of catalog books",
+      "actions": [
+        { "handle": "read", "description": "The caller's own loans" },
+        { "handle": "borrow", "description": "Borrow an available book as the caller" },
+        { "handle": "return", "description": "Return one of the caller's own loans" },
+        { "handle": "read-overdue", "description": "Every overdue loan" }
+      ]
+    }
+  ],
+  "groups": [
+    { "name": "Members", "description": "Library members who browse, borrow and return books" },
+    { "name": "Librarians", "description": "Staff who manage the book catalog and track overdue loans" }
+  ],
+  "roles": [
+    {
+      "name": "Member",
+      "description": "Browses the catalog, borrows and returns books, and asks about their own loans.",
+      "stories": [1, 2, 3, 4, 5, 6],
+      "grants": ["loans:read", "loans:borrow", "loans:return"],
+      "assignTo": ["Members"]
+    },
+    {
+      "name": "Librarian",
+      "description": "Manages the book catalog and tracks overdue loans.",
+      "stories": [1, 7, 8],
+      "grants": ["books:manage", "loans:read-overdue"],
+      "assignTo": ["Librarians"]
+    }
+  ],
+  "testUsers": [
+    { "username": "test-member", "roles": ["Member"] },
+    { "username": "test-member-2", "roles": ["Member"] },
+    { "username": "test-librarian", "roles": ["Librarian"] }
+  ]
+}

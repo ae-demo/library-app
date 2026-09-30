@@ -1,0 +1,32 @@
+title library-app
+
+component library-webapp as "Library Web App" web-application
+component library-api as "Library API" service
+component suggestion-agent as "Suggestion Agent" ai-agent
+component loan-agent as "Loan Agent" ai-agent
+component library-db as "Library Database" database
+component suggestion-memory-db as "Suggestion Agent Memory" database
+component loan-memory-db as "Loan Agent Memory" database
+
+east user-auth as "Thunder Auth" identity-server
+
+north -> library-webapp
+north -> library-api
+north -> suggestion-agent
+north -> loan-agent
+
+library-webapp -> library-api
+library-webapp -> suggestion-agent
+library-webapp -> loan-agent
+library-webapp -> user-auth
+
+library-api -> user-auth
+library-api -> library-db
+
+suggestion-agent -> library-api
+suggestion-agent -> user-auth
+suggestion-agent -> suggestion-memory-db
+
+loan-agent -> library-api
+loan-agent -> user-auth
+loan-agent -> loan-memory-db

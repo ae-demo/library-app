@@ -1,0 +1,19 @@
+{
+  "name": "library-webapp",
+  "type": "web-application",
+  "version": "0.1.0",
+  "language": "TypeScript",
+  "buildpack": "docker",
+  "appPath": "library-webapp",
+  "entrypoint": "deployment/web-application",
+  "exposure": "internet",
+  "dependencies": [
+    { "kind": "component", "name": "library-api", "description": "Browse/search the catalog, borrow and return books, and view overdue loans." },
+    { "kind": "component", "name": "suggestion-agent", "description": "Send the member's mood description and show the returned suggestions." },
+    { "kind": "component", "name": "loan-agent", "description": "Send the member's plain-language loan question and show the returned answer." },
+    { "kind": "platform-resource", "name": "user-auth", "resourceType": "thunder-app" }
+  ],
+  "description": "The single-page app both Members and Librarians sign into: catalog browsing and search, borrowing and returning books, mood-based suggestion chat, loan Q&A chat, and the librarian's catalog management and overdue views. Holds no business data of its own — everything is read from and written to library-api and the two agents.",
+  "stories": [1, 2, 3, 4, 5, 6, 7, 8],
+  "skillsPinned": ["wireframes", "react-webapp", "oxygen-ui-design-system", "thunder-authentication"]
+}
