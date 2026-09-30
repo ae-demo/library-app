@@ -1,0 +1,30 @@
+apiVersion: openchoreo.dev/v1alpha1
+metadata:
+  name: library-api
+
+endpoints:
+  - name: http
+    type: HTTP
+    port: 9090
+    basePath: /
+    visibility:
+      - project
+      - internal
+      - external
+
+dependencies:
+  resources:
+    - ref: library-app-library-db
+      envBindings:
+        dbname: LIBRARY_DB_DBNAME
+        host: LIBRARY_DB_HOST
+        password: LIBRARY_DB_PASSWORD
+        port: LIBRARY_DB_PORT
+        user: LIBRARY_DB_USER
+    - ref: library-app-user-auth
+      envBindings:
+        client_id: USER_AUTH_CLIENT_ID
+        issuer: USER_AUTH_ISSUER
+        jwks_url: USER_AUTH_JWKS_URL
+        resource: USER_AUTH_RESOURCE
+        scopes: USER_AUTH_SCOPES
