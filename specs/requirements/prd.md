@@ -26,25 +26,25 @@ books are overdue.
 ## User Stories
 
 1. As a Member, I want to sign in to the library app, so that I can access my
- account securely.
+account securely.
 2. As a Member, I want to browse and search the books by title, author,
- genre, and whether they're available or on loan, so that I can find books
- I'm interested in.
+genre, and whether they're available or on loan, so that I can find books
+I'm interested in.
 3. As a Member, I want to borrow an available book for two weeks, so that I
- can read it.
+can read it.
 4. As a Member, I want to return a book I've borrowed, so that it becomes
- available for others.
+available for others.
 5. As a Member, I want to describe what I'm in the mood for in my own words
- (like "something light and funny for a long flight" or "a short book
- about space, like The Martian"), so that I get two or three suggestions
- from books that are available now, each with a one-line reason.
+(like "something light and funny for a long flight" or "a short book
+about space, like The Martian"), so that I get two or three suggestions
+from books that are available now, each with a one-line reason.
 6. As a Member, I want to ask about my own loans in plain language (like
- "when is my book due?" or "what have I borrowed this year?"), so that I
- get answers based on my real loan history.
+"when is my book due?" or "what have I borrowed this year?"), so that I
+get answers based on my real loan history.
 7. As a Librarian, I want to add, edit and remove books, so that the catalog
- stays accurate and up to date.
+stays accurate and up to date.
 8. As a Librarian, I want to see which books are overdue, so that I can
- follow up on them.
+follow up on them.
 
 ## Product Decisions
 
