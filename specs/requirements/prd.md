@@ -57,14 +57,14 @@ signing themselves up.
 - Book suggestions from a mood description are produced by an agent that
 reads the member's free-text description and the catalog of currently
 available books, and returns two or three suggestions, each with a
-one-line reason. *assumed*
+one-line reason.
 - Answers to plain-language loan questions are produced by an agent that
 reads the member's own loan records and answers using only their real
-loan history. *assumed*
+loan history.
 - No fines or late fees are charged for overdue books; librarians handle
-overdue books by following up directly. *assumed*
+overdue books by following up directly.
 - A book currently on loan cannot be removed from the catalog until it is
-returned. *assumed*
+returned.
 
 ## Out of Scope
 
