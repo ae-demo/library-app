@@ -1,5 +1,9 @@
 title library-app
 
+// Re-synced with the PRD after story 9 (add a book by photo) was added.
+// No new component, edge, exposure, or external dependency was needed —
+// library-agent and library-webapp already cover it.
+
 component library-webapp as "Library Web App" web-application
 component library-api as "Library API" service
 component library-agent as "Library Agent" ai-agent
