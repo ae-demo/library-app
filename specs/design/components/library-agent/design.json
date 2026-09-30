@@ -7,12 +7,63 @@
   "appPath": "library-agent",
   "entrypoint": "deployment/ai-agent",
   "exposure": "internet",
-  "dependencies": [
-    { "kind": "component", "name": "library-api", "description": "Fetch available books for mood-based suggestions, and the caller's own loans for plain-language loan questions." },
-    { "kind": "platform-resource", "name": "user-auth", "resourceType": "thunder-app" },
-    { "kind": "platform-resource", "name": "library-agent-memory-db", "resourceType": "postgres-cnpg" }
+  "stories": [
+    5,
+    6,
+    9
   ],
   "description": "A single conversational agent: for a member, given a free-text mood description it suggests two or three available books with one-line reasons, or given a plain-language question about the caller's own loans it answers from that caller's real loan records; for a librarian, given an uploaded photo of a book it extracts the book's details and adds it to the catalog once the librarian confirms. Does not edit or remove books, and does not create or modify loans.",
-  "stories": [5, 6, 9],
-  "skillsPinned": ["agent-building"]
+  "dependencies": [
+    {
+      "kind": "component",
+      "name": "library-api",
+      "description": "Fetch available books for mood-based suggestions, and the caller's own loans for plain-language loan questions.",
+      "wiring": {
+        "endpoint": {
+          "component": "library-app-library-api",
+          "name": "http",
+          "visibility": "project",
+          "envBindings": {
+            "address": "LIBRARY_API_URL"
+          }
+        }
+      }
+    },
+    {
+      "kind": "platform-resource",
+      "name": "user-auth",
+      "resourceType": "thunder-app",
+      "wiring": {
+        "ref": "library-app-user-auth",
+        "envBindings": {
+          "client_id": "USER_AUTH_CLIENT_ID",
+          "issuer": "USER_AUTH_ISSUER",
+          "jwks_url": "USER_AUTH_JWKS_URL",
+          "resource": "USER_AUTH_RESOURCE",
+          "scopes": "USER_AUTH_SCOPES"
+        }
+      }
+    },
+    {
+      "kind": "platform-resource",
+      "name": "library-agent-memory-db",
+      "resourceType": "postgres-cnpg",
+      "wiring": {
+        "ref": "library-app-libra-d76f7ced",
+        "envBindings": {
+          "dbname": "LIBRARY_AGENT_MEMORY_DB_DBNAME",
+          "host": "LIBRARY_AGENT_MEMORY_DB_HOST",
+          "password": "LIBRARY_AGENT_MEMORY_DB_PASSWORD",
+          "port": "LIBRARY_AGENT_MEMORY_DB_PORT",
+          "user": "LIBRARY_AGENT_MEMORY_DB_USER"
+        }
+      }
+    }
+  ],
+  "exposesAPI": {
+    "auth": "end-user-required"
+  },
+  "skillsPinned": [
+    "agent-building"
+  ]
 }

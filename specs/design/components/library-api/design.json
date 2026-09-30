@@ -7,11 +7,53 @@
   "appPath": "library-api",
   "entrypoint": "deployment/service",
   "exposure": "internet",
-  "dependencies": [
-    { "kind": "platform-resource", "name": "library-db", "resourceType": "postgres-cnpg" },
-    { "kind": "platform-resource", "name": "user-auth", "resourceType": "thunder-app" }
+  "stories": [
+    2,
+    3,
+    4,
+    7,
+    8
   ],
   "description": "Owns the book catalog and member loans: lists and searches books, tracks each book's availability, creates and returns loans with a fixed two-week due date, and reports overdue loans to librarians. Does not send notifications, charge fines, or handle mood-based suggestions or plain-language Q&A — those are the agents' job, calling back into this API for data.",
-  "stories": [2, 3, 4, 7, 8],
-  "skillsPinned": ["openapi-conventions", "ballerina", "thunder-authentication", "api-management"]
+  "dependencies": [
+    {
+      "kind": "platform-resource",
+      "name": "library-db",
+      "resourceType": "postgres-cnpg",
+      "wiring": {
+        "ref": "library-app-library-db",
+        "envBindings": {
+          "dbname": "LIBRARY_DB_DBNAME",
+          "host": "LIBRARY_DB_HOST",
+          "password": "LIBRARY_DB_PASSWORD",
+          "port": "LIBRARY_DB_PORT",
+          "user": "LIBRARY_DB_USER"
+        }
+      }
+    },
+    {
+      "kind": "platform-resource",
+      "name": "user-auth",
+      "resourceType": "thunder-app",
+      "wiring": {
+        "ref": "library-app-user-auth",
+        "envBindings": {
+          "client_id": "USER_AUTH_CLIENT_ID",
+          "issuer": "USER_AUTH_ISSUER",
+          "jwks_url": "USER_AUTH_JWKS_URL",
+          "resource": "USER_AUTH_RESOURCE",
+          "scopes": "USER_AUTH_SCOPES"
+        }
+      }
+    }
+  ],
+  "exposesAPI": {
+    "auth": "end-user-required"
+  },
+  "skillsPinned": [
+    "openapi-conventions",
+    "ballerina",
+    "thunder-authentication",
+    "api-management"
+  ]
 }
